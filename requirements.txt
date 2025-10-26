@@ -1,0 +1,6 @@
+# Core dependencies for LLM evaluation framework
+python-dateutil>=2.8.0
+typing-extensions>=4.0.0
+
+# For test execution and validation (optional, fallback to basic validation if not available)
+# coverage>=6.0
