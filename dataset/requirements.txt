@@ -1,0 +1,12 @@
+# CodeEval Dataset Downloader Requirements
+#
+# The download.py script uses only Python standard library modules
+# and does not require any external dependencies.
+#
+# Minimum Python version: 3.7+
+#
+# However, if you prefer to use alternative download methods,
+# you can install these optional packages:
+#
+# requests>=2.31.0      # Alternative to urllib for HTTP requests
+# tqdm>=4.65.0          # Enhanced progress bars

@@ -1,409 +1,95 @@
-# RunCodeEval: LLM Evaluations Framework
+# CodeEval: LLM Code Generation Benchmark
 
-A comprehensive framework for evaluating Large Language Models (LLMs) on the open-source CodeEval benchmark dataset. This tool produces detailed metrics including overall scores, category-based performance, complexity analysis, and error reporting for programming problem solutions.
+This repository provides tools for evaluating Large Language Models (LLMs) on the open-source CodeEval benchmark dataset.
 
-## Features
+## Repository Structure
 
-- 🎯 **Comprehensive Evaluation**: Test LLM solutions against the CodeEval benchmark dataset with detailed metrics
-- 📊 **Multiple Metrics**: Overall scores, category breakdown, complexity analysis, and object type performance  
-- 🔍 **Error Analysis**: Detailed error categorization and reporting for debugging
-- 📈 **Comparative Analysis**: Compare multiple models side-by-side
-- 🚀 **Public Framework**: Designed for easy integration and public use
-- ⚡ **Robust Execution**: Timeout protection and isolated test execution
+This repository contains three main components:
 
-## Quick Start
+### 1. **dataset** - CodeEval Benchmark Dataset
+Located in `dataset/`, this folder provides tools to download the official CodeEval benchmark dataset from Zenodo. The dataset contains 600+ Python programming problems across 24 categories with varying complexity levels.
 
-### Installation
+[📖 View dataset documentation](dataset/README.md)
 
-```bash
-pip install -r requirements.txt
+**Key features:**
+- Easy download script using croissant.json metadata
+- Automatic MD5 checksum verification
+- 24+ Python programming categories
+- 3 complexity levels per category
+- Comprehensive test cases for each problem
 
-# Optional: Run tests to verify installation
-python run_tests.py
-```
+### 2. **llm_solutions** - Solution Generator (Optional)
+Located in `llm_solutions/`, this **optional** tool generates LLM solutions for CodeEval benchmark problems. You can use this tool to obtain solutions from various LLM models, or use your own solution generation method as long as it produces solutions in the [required format](runcodeeval/README.md#solution-data).
 
-### Basic Usage
+[📖 View llm_solutions documentation](llm_solutions/README.md)
 
-```bash
-# Evaluate a single model (saves to generated/evaluation_timestamp/model/)
-python main.py --benchmark path/to/codeeval --solutions path/to/model/solutions
+**Key features:**
+- Generate solutions from multiple LLM providers
+- Support for various models (GPT-4, Claude, etc.)
+- Configurable prompting strategies
+- Batch processing capabilities
 
-# Evaluate multiple models (saves to generated/evaluation_timestamp/model1/, model2/, etc.)
-python main.py --benchmark path/to/codeeval --solutions path/to/model1 path/to/model2
+### 3. **runcodeeval** - Evaluation Framework
+Located in `runcodeeval/`, this software evaluates LLM-generated solutions against the CodeEval benchmark dataset. It produces detailed metrics including overall scores, category-based performance, complexity analysis, and error reporting.
 
-# Custom output directory  
-python main.py --benchmark path/to/codeeval --solutions path/to/model/solutions --output my_results
+[📖 View runcodeeval documentation](runcodeeval/README.md)
 
-# Verbose mode for debugging
-python main.py --benchmark path/to/codeeval --solutions path/to/model/solutions --verbose
-```
+**Key features:**
+- Comprehensive evaluation with detailed metrics
+- Category and complexity breakdowns
+- Error analysis and reporting
+- Multi-model comparison
+- Exam-based scoring system
 
-## Input Formats
+## Quick Start Workflow
 
-### Benchmark Dataset
+### Complete Evaluation Pipeline
 
-Your benchmark directory should contain JSONL files with problems:
+1. **Download the dataset**:
+   ```bash
+   cd dataset
+   python download.py
+   cd ..
+   ```
 
-```json
-{
-  "task_id": "dataclass_1",
-  "name": "create_person_class", 
-  "problem": "Create a dataclass for a Person with name and age fields",
-  "canonical_solution": "@dataclass\nclass Person:\n    name: str\n    age: int",
-  "tests": "[{\"ctx\": \"p = Person('Alice', 30)\", \"assertion\": \"p.name == 'Alice' and p.age == 30\"}]",
-  "topic": "dataclass",
-  "object": "class",
-  "complexity": 2
+2. **Generate solutions** (optional - use llm_solutions or your own method):
+   ```bash
+   cd llm_solutions
+   # Follow instructions in llm_solutions/README.md
+   cd ..
+   ```
+
+   **Or** use your own solution generation method that outputs JSONL files with the [required format](runcodeeval/README.md#solution-data).
+
+3. **Evaluate solutions**:
+   ```bash
+   cd runcodeeval
+   python main.py --benchmark ../dataset/generated --solutions <path-to-your-solutions>
+   ```
+
+## What is CodeEval?
+
+CodeEval is an open-source benchmark dataset for evaluating LLMs on programming tasks. It contains problems across multiple categories (dataclass, typing, decorator, inheritance, etc.) with varying complexity levels.
+
+## Citation
+
+If you use CodeEval in your research, please cite our work:
+
+```bibtex
+@inproceedings{brahman-mahoor-2025-codeeval,
+    title = "{C}ode{E}val: A pedagogical approach for targeted evaluation of code-trained Large Language Models",
+    author = "Brahman, Danny and Mahoor, Mohammad",
+    booktitle = "Proceedings of the International Joint Conference on Natural Language Processing {\&} Asia-Pacific Chapter of the Association for Computational Linguistics",
+    year = "2025",
+    publisher = "Association for Computational Linguistics",
+    note = "Accepted - To appear"
 }
 ```
 
-### Solution Data
+## License
 
-Your solution directory should contain JSONL files with solutions:
-
-```json
-{
-  "task_id": "dataclass_1",
-  "model": "gpt-4",
-  "candidate_solution": "@dataclass\nclass Person:\n    name: str\n    age: int"
-}
-```
-
-**Required fields**: `task_id`, `model`, `candidate_solution`
-
-## Output Reports
-
-The framework generates multiple report types organized by session:
-
-### Default Output Structure
-```
-generated/
-└── evaluation_1234567890/          # Session timestamp
-    ├── gpt-4/                      # Model directory
-    │   ├── test_results_score.json
-    │   ├── test_results_errors.json
-    │   ├── test_results.jsonl
-    │   └── evaluation_summary.md
-    ├── claude-3/                   # Another model
-    │   ├── test_results_score.json
-    │   ├── test_results_errors.json
-    │   ├── test_results.jsonl
-    │   └── evaluation_summary.md
-    └── model_comparison.json       # Cross-model comparison (if multiple models)
-```
-
-### Score Analysis (`test_results_score.json`)
-```json
-{
-  "model": "gpt-4",
-  "total": 85.6,
-  "by_topic": {
-    "dataclass": 92.1,
-    "typing": 78.3
-  },
-  "by_complexity": {
-    "level_1": 94.2,
-    "level_2": 85.1, 
-    "level_3": 73.8
-  },
-  "by_problem_type": {
-    "function": 87.2,
-    "class": 83.9
-  }
-}
-```
-
-### Error Analysis (`test_results_errors.json`)
-```json
-{
-  "total_errors": 42,
-  "error_rate": 14.4,
-  "error_breakdown": {
-    "SyntaxError": 35.7,
-    "NameError": 28.6,
-    "Error": 21.4,
-    "TimeoutError": 14.3
-  }
-}
-```
-
-### Detailed Results (`test_results.jsonl`)
-One JSON object per line with complete test results:
-```json
-{
-  "task_id": "dataclass_1",
-  "category": "dataclass", 
-  "total_tests": 3,
-  "tests_passed": 2,
-  "all_tests_passed": false,
-  "error_type": "AssertionError",
-  "test_details": [...]
-}
-```
-
-### Human-Readable Summary (`evaluation_summary.md`)
-Markdown report with:
-- Overall performance metrics
-- Category and complexity breakdowns  
-- Error analysis and statistics
-- Solution quality metrics
-
-## Directory Structure Examples
-
-### Benchmark Dataset (from dataset project)
-```
-../dataset/generated/
-├── dataclass.jsonl      # 25 dataclass problems
-├── typing.jsonl         # 23 typing problems  
-├── decorator.jsonl      # 28 decorator problems
-└── ...                  # 24 categories total
-```
-
-### Solution Directory (from llm_solutions project)
-```
-path/to/session/gpt-4/
-├── dataclass.jsonl      # GPT-4 solutions for dataclass problems
-├── typing.jsonl         # GPT-4 solutions for typing problems
-├── decorator.jsonl      # GPT-4 solutions for decorator problems
-└── ...
-```
-
-## Metrics Explained
-
-### Overall Score (Exam-Based Scoring)
-
-The scoring system works exactly like a student taking an exam:
-
-**The Exam Analogy:**
-- The **benchmark dataset** = Complete exam paper with all questions
-- The **solutions provided** = Questions the student attempted
-- The **absent solutions** = Questions the student left blank
-
-**Scoring Formula:**
-```
-Average Score = (Sum of all problem scores) / (Total problems in benchmark)
-```
-
-Where each problem score is:
-- **Attempted problems**: (tests_passed / total_tests) × 100
-- **Unattempted problems**: 0
-
-**Example 1 - Partial Attempt:**
-- Exam has 10 questions (benchmark has 10 problems)
-- Student attempts 2 questions and gets both correct
-- Score = (100 + 100 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0) ÷ 10 = **20%**
-- NOT 100% (which would incorrectly only consider attempted questions)
-
-**Example 2 - Real Dataset:**
-- Benchmark has 602 problems total
-- Model provides 100 solutions with 80% average correctness
-- Model skips 502 problems (absent solutions)
-- Overall score = (100 × 80% + 502 × 0%) ÷ 602 = 80 ÷ 602 = **13.3%**
-
-**Why This Matters:**
-This scoring ensures fair comparison between models:
-- A model that attempts all problems with 70% accuracy scores 70%
-- A model that cherry-picks 10% of problems with 90% accuracy scores only 9%
-- Just like in school, you can't get an A by only answering the easy questions!
-
-### Category Scores  
-Performance breakdown by programming topic:
-- `dataclass`: Python dataclass problems
-- `typing`: Type hints and generics
-- `decorator`: Function and class decorators
-- `inheritance`: Class inheritance patterns
-- And 20+ other categories...
-
-### Complexity Scores
-Performance by difficulty level:
-- **Level 1**: Simple, straightforward problems
-- **Level 2**: Medium complexity with multiple requirements  
-- **Level 3**: Advanced problems requiring deep understanding
-
-### Object Type Scores
-Performance by solution type:
-- **function**: Function implementation problems
-- **class**: Class implementation problems  
-
-## Error Categories
-
-The framework categorizes errors into five main types based on the original runcodeeval project:
-
-### Primary Error Types
-
-- **SyntaxError**: Invalid Python syntax that prevents code compilation
-  - Examples: Missing colons, incorrect indentation, invalid operators
-  - Impact: Code cannot be executed at all
-  - Common causes: Incomplete code generation, formatting issues
-
-- **NameError**: References to undefined variables, functions, or classes
-  - Examples: Using undefined variables, calling non-existent functions
-  - Impact: Code compiles but fails during execution
-  - Common causes: Missing imports, typos in variable names
-
-- **TimeoutError**: Solution execution exceeded the 60-second time limit
-  - Examples: Infinite loops, inefficient algorithms on large inputs
-  - Impact: Execution terminated to prevent resource exhaustion
-  - Common causes: Algorithmic complexity issues, infinite recursion
-
-- **NoCompletionError**: Solution file contains the task_id but candidate_solution is empty or invalid
-  - Examples: Empty candidate_solution field, whitespace-only solutions, invalid code that can't be parsed
-  - Impact: Counts as 0% score AND counted as an error 
-  - Common causes: Model generated empty response, truncated output, parsing failures
-
-- **Error**: Other execution errors that prevent solution from running
-  - Examples: TypeError, ImportError, RuntimeError during solution execution
-  - Impact: Solution fails to execute properly
-  - Common causes: Implementation errors, missing dependencies
-
-### Important: Absent Solutions vs NoCompletionError
-
-There's a crucial distinction between two types of "missing" solutions:
-
-**Absent Solutions** (Not counted as errors):
-- **Definition**: task_id not found in solution files at all
-- **Meaning**: Model never attempted this problem (completely skipped)
-- **Impact**: Counts as 0% score but NOT counted as an error
-- **Example**: Benchmark has task "dataclass_1" but solution files contain no entry for this task_id
-
-**NoCompletionError** (Counted as errors):
-- **Definition**: task_id found in solution files but candidate_solution is empty/invalid
-- **Meaning**: Model attempted the problem but failed to generate valid code
-- **Impact**: Counts as 0% score AND counted as an error
-- **Example**: Solution file contains `{"task_id": "dataclass_1", "model": "gpt-4", "candidate_solution": ""}`
-
-This distinction helps understand model behavior:
-- High absent solutions = Model is selective/conservative 
-- High NoCompletionError = Model attempts problems but fails to generate valid code
-
-### Important: What Is NOT Counted as an Error
-
-- **Test Failures**: Solutions that run successfully but fail assertion tests
-- **Incorrect Results**: Solutions that execute but produce wrong answers  
-- **Partial Correctness**: Solutions that pass some tests but not others
-- **Absent Solutions**: Problems the model never attempted (task_id not in solution files)
-
-These cases are reflected in the score (e.g., 2/3 tests passed = 66.7% score) but are NOT counted as errors since the solution executed successfully or was never attempted.
-
-### Error Classification Details
-
-The error analyzer maps various specific error types to these five categories:
-
-```python
-ERROR_CATEGORIES = {
-    'NameError': 'NameError',           # Undefined references
-    'SyntaxError': 'SyntaxError',       # Invalid syntax  
-    'TimeoutError': 'TimeoutError',     # Execution timeout
-    'NoCompletionError': 'NoCompletionError',  # Missing solution
-    'Error': 'Error'                    # Catch-all for other execution errors
-}
-```
-
-**Not included**: `AssertionError`, `TestFailure` - these represent solutions that run but produce incorrect results, so they contribute to scoring but not error statistics.
-
-### Error Impact on Scoring
-
-- **Failed solutions**: All error types result in 0% score for that specific problem
-- **Partial credit**: No partial credit given for solutions with errors
-- **Category impact**: Errors affect category-specific scores based on problem classification
-- **Overall impact**: All errors count toward the overall error rate and reduce average score
-
-## Advanced Features
-
-### Absent Solution Handling
-The framework treats missing solutions like unanswered exam questions:
-- **Overall Score**: Absent solutions count as 0% (just like blank answers)
-- **Category Scores**: Only calculated for that category's attempted problems
-- **Statistics**: Reports both attempted and missing counts
-- **Fair Comparison**: Prevents gaming by cherry-picking easy problems
-
-Example: If a model skips all "concurrency" problems:
-- Overall score is penalized (those problems count as 0%)
-- Concurrency category shows 0% (no attempts)
-- Other categories show their actual performance
-- Just like a student who skips an entire section of an exam!
-
-### Comparative Analysis
-When evaluating multiple models:
-- Generates `model_comparison.json` with side-by-side metrics
-- Creates `model_comparison_summary.md` with rankings
-- Identifies strengths and weaknesses across models
-
-### Flexible Input Structure
-- **Solution files**: Can be named anything (not required to match categories)
-- **Multiple files**: Solutions can be split across multiple JSONL files
-- **Mixed categories**: Each file can contain solutions for multiple categories
-- **Auto-detection**: Category determined from `task_id` in solutions
-
-## Troubleshooting
-
-### Common Issues
-
-**"No valid benchmark problems found"**
-- Check that benchmark directory contains JSONL files
-- Verify JSONL format with required fields
-- Check file permissions
-
-**"No valid solutions found"**  
-- Verify solution files contain required keys: `task_id`, `model`, `candidate_solution`
-- Check JSONL format (one JSON object per line)
-- Ensure task_ids match between benchmark and solutions
-
-**"Permission denied"**
-- Check write permissions for output directory
-- Verify input file read permissions
-
-### Debugging
-
-Use `--verbose` flag for detailed logging:
-```bash
-python main.py --benchmark path/to/codeeval --solutions path/to/solutions --verbose
-```
-
-This will show:
-- Detailed file loading progress
-- Validation warnings and errors
-- Per-problem evaluation results
-- Debug information for failed tests
-
-## Testing
-
-The framework includes a comprehensive test suite to ensure the scoring logic remains correct:
-
-```bash
-# Run all tests
-python run_tests.py
-
-# Run specific test file
-python -m unittest tests.test_metrics_calculator -v
-```
-
-### Test Coverage
-
-- **Unit Tests**: Test individual components like `MetricsCalculator`
-- **Integration Tests**: Test the complete evaluation pipeline
-- **Scoring Logic Tests**: Verify exam-based scoring with various scenarios:
-  - Perfect scores (all problems attempted and correct)
-  - Partial attempts (some problems skipped)
-  - Mixed results (some correct, some incorrect, some absent)
-  - Edge cases (zero tests, no attempts)
-
-### Running Tests in CI/CD
-
-The tests return appropriate exit codes for continuous integration:
-
-```bash
-python run_tests.py && echo "All tests passed!" || echo "Tests failed!"
-```
+This project is licensed under the terms in the [LICENSE](LICENSE) file.
 
 ## Contributing
 
-The framework is designed to be extensible:
-
-1. **Add new metrics**: Extend `MetricsCalculator` class
-2. **Add error types**: Update `ErrorAnalyzer.ERROR_CATEGORIES`  
-3. **Custom reports**: Extend `ReportGenerator` class
-4. **New test types**: Modify `CoreEvaluator._run_single_test()`
-5. **Add tests**: When modifying scoring logic, add corresponding tests
-
-**Important**: Always run the test suite when making changes to ensure the scoring logic remains intact!
+Contributions are welcome! Please refer to the individual component READMEs for specific contribution guidelines.

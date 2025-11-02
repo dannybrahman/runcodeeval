@@ -1,0 +1,91 @@
+{
+  "@context": {
+    "@language": "en",
+    "@vocab": "https://schema.org/",
+    "citeAs": "cr:citeAs",
+    "column": "cr:column",
+    "conformsTo": "dct:conformsTo",
+    "cr": "http://mlcommons.org/croissant/",
+    "data": {
+      "@id": "cr:data",
+      "@type": "@json"
+    },
+    "dataBiases": "cr:dataBiases",
+    "dataCollection": "cr:dataCollection",
+    "dataType": {
+      "@id": "cr:dataType",
+      "@type": "@vocab"
+    },
+    "dct": "http://purl.org/dc/terms/",
+    "extract": "cr:extract",
+    "field": "cr:field",
+    "fileProperty": "cr:fileProperty",
+    "fileObject": "cr:fileObject",
+    "fileSet": "cr:fileSet",
+    "format": "cr:format",
+    "includes": "cr:includes",
+    "isLiveDataset": "cr:isLiveDataset",
+    "jsonPath": "cr:jsonPath",
+    "key": "cr:key",
+    "md5": "cr:md5",
+    "parentField": "cr:parentField",
+    "path": "cr:path",
+    "recordSet": "cr:recordSet",
+    "references": "cr:references",
+    "regex": "cr:regex",
+    "repeated": "cr:repeated",
+    "replace": "cr:replace",
+    "sc": "https://schema.org/",
+    "separator": "cr:separator",
+    "source": "cr:source",
+    "subField": "cr:subField",
+    "transform": "cr:transform"
+  },
+  "@type": "sc:Dataset",
+  "name": "CodeEval",
+  "description": "CodeEval: A pedagogical approach for targeted evaluation of code-trained Large Language Models. This dataset contains benchmark problems across multiple Python programming categories (dataclass, typing, decorator, inheritance, etc.) with varying complexity levels for evaluating LLM code generation capabilities.",
+  "conformsTo": "http://mlcommons.org/croissant/1.0",
+  "citeAs": "@misc{brahman_2025_17495202, author = {Brahman, Danny and Mahoor, Mohammad}, title = {CodeEval: A pedagogical approach for targeted evaluation of code-trained Large Language Models}, month = jan, year = 2025, publisher = {Zenodo}, version = {1.0.0}, doi = {10.5281/zenodo.17495202}, url = {https://doi.org/10.5281/zenodo.17495202}}",
+  "url": "https://doi.org/10.5281/zenodo.17495202",
+  "version": "1.0.0",
+  "datePublished": "2025-11-10",
+  "license": "https://creativecommons.org/licenses/by/4.0/",
+  "creator": [
+    {
+      "@type": "Person",
+      "name": "Danny Brahman",
+      "affiliation": {
+        "@type": "Organization",
+        "name": "University of Denver"
+      }
+    },
+    {
+      "@type": "Person",
+      "name": "Mohammad Mahoor",
+      "affiliation": {
+        "@type": "Organization",
+        "name": "University of Denver"
+      }
+    }
+  ],
+  "keywords": [
+    "machine learning",
+    "code generation",
+    "benchmark",
+    "large language models",
+    "python",
+    "evaluation"
+  ],
+  "distribution": [
+    {
+      "@type": "cr:FileObject",
+      "@id": "codeeval-zip",
+      "name": "codeeval.zip",
+      "description": "Complete CodeEval benchmark dataset (zip archive containing JSONL files)",
+      "contentUrl": "https://zenodo.org/records/17495202/files/codeeval.zip?download=1",
+      "encodingFormat": "application/zip",
+      "contentSize": "108.0 kB",
+      "md5": "3f1946c1bd1f3078a01330a3dd8d31d5"
+    }
+  ]
+}
