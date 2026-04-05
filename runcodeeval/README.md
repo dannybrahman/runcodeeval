@@ -59,7 +59,7 @@ Your benchmark directory should contain JSONL files with problems:
 
 ### Solution Data
 
-Your solution directory should contain JSONL files with solutions:
+Your solution directory should contain JSONL files with solutions. Solutions can be generated using any method (the included `llm_solutions` tool, your own scripts, etc.) as long as they follow this format:
 
 ```json
 {
@@ -70,6 +70,8 @@ Your solution directory should contain JSONL files with solutions:
 ```
 
 **Required fields**: `task_id`, `model`, `candidate_solution`
+
+**Note**: Solution files can have any name (e.g., `solutions.jsonl`, `gpt4_results.jsonl`) - matching happens via the `task_id` field, not filename.
 
 ## Output Reports
 
@@ -395,6 +397,10 @@ The tests return appropriate exit codes for continuous integration:
 ```bash
 python run_tests.py && echo "All tests passed!" || echo "Tests failed!"
 ```
+
+## Citation
+
+If you use RunCodeEval in your research, please see the [main README](../README.md#citation) for citation information.
 
 ## Contributing
 

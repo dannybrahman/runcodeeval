@@ -73,16 +73,20 @@ CodeEval is an open-source benchmark dataset for evaluating LLMs on programming 
 
 ## Citation
 
-If you use CodeEval in your research, please cite our work:
+This work was published at [ACL 2025](https://aclanthology.org/2025.findings-ijcnlp.52/). If you use CodeEval in your research, please cite our work:
 
 ```bibtex
 @inproceedings{brahman-mahoor-2025-codeeval,
     title = "{C}ode{E}val: A pedagogical approach for targeted evaluation of code-trained Large Language Models",
     author = "Brahman, Danny and Mahoor, Mohammad",
-    booktitle = "Proceedings of the International Joint Conference on Natural Language Processing {\&} Asia-Pacific Chapter of the Association for Computational Linguistics",
+    booktitle = "Proceedings of the 14th International Joint Conference on Natural Language Processing and the 4th Conference of the Asia-Pacific Chapter of the Association for Computational Linguistics",
+    month = dec,
     year = "2025",
-    publisher = "Association for Computational Linguistics",
-    note = "Accepted - To appear"
+    address = "Mumbai, India",
+    publisher = "The Asian Federation of Natural Language Processing and The Association for Computational Linguistics",
+    url = "https://aclanthology.org/2025.findings-ijcnlp.52/",
+    doi = "10.18653/v1/2025.findings-ijcnlp.52",
+    pages = "863--883"
 }
 ```
 
